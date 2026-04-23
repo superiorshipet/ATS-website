@@ -1,0 +1,142 @@
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  /* Header */
+  header .container, header .max-w-7xl {
+    padding: 0 12px;
+  }
+  
+  header .flex {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  header nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+    padding-bottom: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  header nav .flex {
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+  
+  header nav a {
+    padding: 6px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  
+  /* Main Content */
+  main {
+    padding: 16px !important;
+  }
+  
+  /* Grid Layouts */
+  .grid {
+    gap: 16px !important;
+  }
+  
+  .grid.md\:grid-cols-2,
+  .grid.md\:grid-cols-3,
+  .grid.md\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Cards */
+  .card, [class*="Card"] {
+    margin-bottom: 0;
+  }
+  
+  /* Tables - make scrollable */
+  .overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 600px;
+  }
+  
+  /* Forms */
+  input, textarea, select, button {
+    font-size: 16px !important; /* Prevent zoom on focus */
+  }
+  
+  /* Hero Section */
+  h1 {
+    font-size: 24px !important;
+  }
+  
+  h2 {
+    font-size: 20px !important;
+  }
+  
+  .text-4xl, .text-5xl {
+    font-size: 28px !important;
+  }
+  
+  /* Statistics Cards */
+  .text-2xl {
+    font-size: 24px !important;
+  }
+  
+  /* Tabs */
+  .tabs-list, [role="tablist"] {
+    flex-wrap: wrap;
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 16px;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid.md\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .grid.md\:grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .grid.md\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  header .flex {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  header .flex.items-center {
+    flex-direction: column;
+  }
+  
+  .flex.items-center.gap-4 {
+    flex-direction: column;
+    gap: 8px !important;
+  }
+  
+  button, .button {
+    width: 100%;
+  }
+  
+  .gap-6 {
+    gap: 12px !important;
+  }
+  
+  .p-6, [class*="p-6"] {
+    padding: 16px !important;
+  }
+}
