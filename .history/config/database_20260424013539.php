@@ -32,7 +32,7 @@ class Database {
                 $port = getenv('DB_PORT') ?: '5432';
                 $dbname = getenv('DB_NAME') ?: 'ats_system';
                 $user = getenv('DB_USER') ?: 'postgres';
-                $password = getenv('DB_PASSWORD') ?: 'postgres'; // Set to your password if required
+                $password = getenv('DB_PASSWORD') ?: 'password'; // Set your local password here
                 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
             }
             $this->conn = new PDO($dsn);

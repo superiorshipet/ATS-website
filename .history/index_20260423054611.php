@@ -17,22 +17,11 @@ if (strpos($path, '/api/') === 0) {
     exit;
 }
 
-// Serve static files (Vite build output is in dist/)
+// Serve static files
 $file_path = __DIR__ . $path;
-if (strpos($path, '/assets/') === 0) {
-    $file_path = __DIR__ . '/dist' . $path;
-}
 if (is_file($file_path)) {
-    $ext = pathinfo($file_path, PATHINFO_EXTENSION);
-    $mime = 'application/octet-stream';
-    if ($ext === 'css') $mime = 'text/css';
-    elseif ($ext === 'js') $mime = 'application/javascript';
-    elseif ($ext === 'html') $mime = 'text/html';
-    elseif ($ext === 'png') $mime = 'image/png';
-    elseif ($ext === 'jpg' || $ext === 'jpeg') $mime = 'image/jpeg';
-    elseif ($ext === 'gif') $mime = 'image/gif';
-    elseif ($ext === 'svg') $mime = 'image/svg+xml';
-    elseif ($ext === 'json') $mime = 'application/json';
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($file_path);
     header('Content-Type: ' . $mime);
     readfile($file_path);
     exit;

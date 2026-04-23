@@ -5,7 +5,7 @@ nixPkgs = ["php83", "php83Extensions.pdo_pgsql", "nodejs-20", "pnpm"]
 cmds = ["pnpm config set store-dir /app/.pnpm-store", "cd /app && pnpm install --frozen-lockfile"]
 
 [phases.build]
-cmds = ["cd /app && pnpm install", "cd /app && pnpm build"]
+cmds = ["cd /app && pnpm build", "cp -r /app/dist/* /app/"]
 
 [start]
-cmd = "sh start.sh"
+cmd = "php -S 0.0.0.0:$PORT"

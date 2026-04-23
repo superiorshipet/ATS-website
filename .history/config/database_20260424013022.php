@@ -17,25 +17,16 @@ class Database {
         try {
             // Use DATABASE_URL from Railway
             $databaseUrl = getenv('DATABASE_URL');
-            if ($databaseUrl) {
-                // Parse the DATABASE_URL for Railway
-                $parsed = parse_url($databaseUrl);
-                $host = $parsed['host'];
-                $port = $parsed['port'] ?? 5432;
-                $dbname = ltrim($parsed['path'], '/');
-                $user = $parsed['user'];
-                $password = $parsed['pass'];
-                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password;sslmode=require";
-            } else {
+            if (!$databaseUrl) {
                 // Fallback for local development
                 $host = getenv('DB_HOST') ?: 'localhost';
                 $port = getenv('DB_PORT') ?: '5432';
                 $dbname = getenv('DB_NAME') ?: 'ats_system';
                 $user = getenv('DB_USER') ?: 'postgres';
-                $password = getenv('DB_PASSWORD') ?: 'postgres'; // Set to your password if required
-                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
+                $password = getenv('DB_PASSWORD') ?: 'password'; // Set your local password here
+                $databaseUrl = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
             }
-            $this->conn = new PDO($dsn);
+            $this->conn = new PDO($databaseUrl);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         } catch(PDOException $e) {
