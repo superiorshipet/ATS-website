@@ -28,7 +28,7 @@ RUN a2enmod rewrite
 COPY --chown=www-data:www-data . /var/www/html/
 
 # Copy built React files to Apache document root
-COPY --from=frontend-builder --chown=www-data:www-data /app/dist /var/www/html/public
+COPY --from=frontend-builder --chown=www-data:www-data /app/dist /var/www/html/
 
 # Configure Apache to serve React app
 RUN echo '<Directory /var/www/html>
