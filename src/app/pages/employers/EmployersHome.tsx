@@ -6,7 +6,7 @@ import { Badge } from '../../components/ui/badge';
 import { Avatar, AvatarFallback } from '../../components/ui/avatar';
 import { useState, useEffect } from 'react';
 
-const API_URL = 'http://localhost:8000/api';
+import { API_URL } from "../../../lib/api";
 
 interface Application {
   id: number;

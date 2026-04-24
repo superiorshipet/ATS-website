@@ -6,8 +6,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { GraduationCap, Building2, Mail, Lock, User, Phone } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL ;
+import { API_URL } from '../../lib/api';
 
 export function Auth() {
   const navigate = useNavigate();
@@ -20,6 +19,7 @@ export function Auth() {
     const formData = new FormData(e.currentTarget);
     
     try {
+      console.log('📡 Login API URL:', `${API_URL}/auth/login`);
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,6 +40,7 @@ export function Auth() {
         alert('فشل تسجيل الدخول: ' + (data.error || 'بيانات غير صحيحة'));
       }
     } catch (error) {
+      console.error('Login error:', error);
       alert('خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);
@@ -52,6 +53,7 @@ export function Auth() {
     const formData = new FormData(e.currentTarget);
     
     try {
+      console.log('📡 Register API URL:', `${API_URL}/auth/register`);
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,6 +73,7 @@ export function Auth() {
         alert('فشل إنشاء الحساب: ' + (data.error || 'حدث خطأ'));
       }
     } catch (error) {
+      console.error('Register error:', error);
       alert('خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);

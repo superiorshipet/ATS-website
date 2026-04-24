@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import { Badge } from '../../components/ui/badge';
 import { Mail, Phone, MapPin, Calendar, Edit, Camera, Save, X } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { API_URL } from "../../../lib/api";
 
 interface ProfileData {
   id: number;

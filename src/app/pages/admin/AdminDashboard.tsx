@@ -37,7 +37,7 @@ import {
   DialogTrigger,
 } from '../../components/ui/dialog';
 
-const API_URL = 'http://localhost:8000/api';
+import { API_URL } from "../../../lib/api";
 
 interface Stats {
   total_users: number;
