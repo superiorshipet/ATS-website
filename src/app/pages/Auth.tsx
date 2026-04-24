@@ -7,7 +7,7 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { GraduationCap, Building2, Mail, Lock, User, Phone } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_URL = import.meta.env.VITE_API_URL ;
 
 export function Auth() {
   const navigate = useNavigate();
