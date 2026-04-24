@@ -38,8 +38,7 @@ export function Home() {
     <div className="space-y-12" dir="rtl">
       <div className="text-center space-y-4">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-          ATS-websit | منصة التوظيف الذكية
-        </h1>
+سيرتي الذكية        </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           منصة متكاملة لإدارة السير الذاتية ومتابعة طلبات التوظيف بكفاءة عالية
         </p>
