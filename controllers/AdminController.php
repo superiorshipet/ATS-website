@@ -54,10 +54,31 @@ class AdminController {
     }
     
     public function deleteUser($id) {
-        $query = "DELETE FROM users WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $result = $stmt->execute([':id' => $id]);
-        echo json_encode(["success" => $result]);
+        // Start transaction to handle related records
+        $this->conn->beginTransaction();
+        try {
+            // Delete related records from graduates table
+            $query = "DELETE FROM graduates WHERE user_id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([':id' => $id]);
+            
+            // Delete related records from employers table
+            $query = "DELETE FROM employers WHERE user_id = :id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([':id' => $id]);
+            
+            // Now delete from users table
+            $query = "DELETE FROM users WHERE id = :id";
+            $stmt = $this->conn->prepare($query);
+            $result = $stmt->execute([':id' => $id]);
+            
+            $this->conn->commit();
+            echo json_encode(["success" => $result]);
+        } catch (PDOException $e) {
+            $this->conn->rollBack();
+            http_response_code(500);
+            echo json_encode(["success" => false, "error" => "Failed to delete user: " . $e->getMessage()]);
+        }
     }
     
     public function createAdmin() {

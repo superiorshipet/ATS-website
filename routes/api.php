@@ -170,8 +170,24 @@ if ($path === "api/admin/create" && $request_method === "POST") {
     return;
 }
 
+// Admin - Update user status
+if (preg_match('/^api\/admin\/users\/(\d+)\/status$/', $path, $matches) && $request_method === 'PUT') {
+    require_once __DIR__ . '/../controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->updateUserStatus($matches[1]);
+    return;
+}
+
+// Admin - Delete user
+if (preg_match('/^api\/admin\/users\/(\d+)$/', $path, $matches) && $request_method === 'DELETE') {
+    require_once __DIR__ . '/../controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->deleteUser($matches[1]);
+    return;
+}
+
 // Admin - Update any job
-if (preg_match("/^api/admin/jobs/(d+)$/", $path, $matches) && $request_method === "PUT") {
+if (preg_match('/^api\/admin\/jobs\/(\d+)$/', $path, $matches) && $request_method === 'PUT') {
     require_once __DIR__ . "/../controllers/AdminController.php";
     $controller = new AdminController();
     $controller->updateJob($matches[1]);
@@ -179,7 +195,7 @@ if (preg_match("/^api/admin/jobs/(d+)$/", $path, $matches) && $request_method ==
 }
 
 // Admin - Delete any job
-if (preg_match("/^api/admin/jobs/(d+)$/", $path, $matches) && $request_method === "DELETE") {
+if (preg_match('/^api\/admin\/jobs\/(\d+)$/', $path, $matches) && $request_method === 'DELETE') {
     require_once __DIR__ . "/../controllers/AdminController.php";
     $controller = new AdminController();
     $controller->deleteJob($matches[1]);
@@ -213,60 +229,3 @@ if ($path === 'api/applications/employer' && $request_method === 'GET') {
 }
 http_response_code(404);
 echo json_encode(["error" => "Endpoint not found", "path" => $path, "method" => $request_method]);
-?>
-
-// PUT /api/jobs/{id} - Update job
-if (preg_match('/^api\/jobs\/(\d+)$/', $path, $matches) && $request_method === 'PUT') {
-    require_once __DIR__ . '/../controllers/JobController.php';
-    $controller = new JobController();
-    $controller->updateJob($matches[1]);
-    return;
-}
-
-// Admin - Create new admin
-if ($path === 'api/admin/create' && $request_method === 'POST') {
-    require_once __DIR__ . '/../controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->createAdmin();
-    return;
-}
-
-// Admin - Get all jobs
-if ($path === 'api/admin/jobs' && $request_method === 'GET') {
-    require_once __DIR__ . '/../controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->getAllJobs();
-    return;
-}
-
-// Admin - Update any job
-if (preg_match('/^api\/admin\/jobs\/(\d+)$/', $path, $matches) && $request_method === 'PUT') {
-    require_once __DIR__ . '/../controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->updateJob($matches[1]);
-    return;
-}
-
-// Admin - Delete any job
-if (preg_match('/^api\/admin\/jobs\/(\d+)$/', $path, $matches) && $request_method === 'DELETE') {
-    require_once __DIR__ . '/../controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->deleteJob($matches[1]);
-    return;
-}
-
-// Admin - Get all companies
-if ($path === 'api/admin/companies' && $request_method === 'GET') {
-    require_once __DIR__ . '/../controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->getAllCompanies();
-    return;
-}
-
-// Admin - Get all graduates
-if ($path === 'api/admin/graduates' && $request_method === 'GET') {
-    require_once __DIR__ . '/../controllers/AdminController.php';
-    $controller = new AdminController();
-    $controller->getAllGraduates();
-    return;
-}
