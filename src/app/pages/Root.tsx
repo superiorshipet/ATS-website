@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Building2, GraduationCap, Home, Shield, LogOut, User, Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { ChatBot } from '../components/ChatBot';
 
 export function Root() {
   const location = useLocation();
@@ -160,6 +161,8 @@ export function Root() {
           <p className="text-center text-sm text-gray-600">© 2026 ATS-websit - جميع الحقوق محفوظة</p>
         </div>
       </footer>
+
+      <ChatBot />
     </div>
   );
 }

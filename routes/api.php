@@ -227,5 +227,28 @@ if ($path === 'api/applications/employer' && $request_method === 'GET') {
     $controller->getEmployerApplications();
     return;
 }
+
+// ==================== CHATBOT ====================
+if ($path === 'api/chatbot' && $request_method === 'POST') {
+    require_once __DIR__ . '/../controllers/ChatbotController.php';
+    $controller = new ChatbotController();
+    $controller->handleChat();
+    return;
+}
+
+// GET /api/chatbot/history - Get chat history for user
+if ($path === 'api/chatbot/history' && $request_method === 'GET') {
+    require_once __DIR__ . '/../controllers/ChatbotController.php';
+    $controller = new ChatbotController();
+    $userId = $_GET['user_id'] ?? null;
+    if ($userId) {
+        $controller->getChatHistory($userId);
+    } else {
+        http_response_code(400);
+        echo json_encode(["success" => false, "error" => "user_id is required"]);
+    }
+    return;
+}
+
 http_response_code(404);
 echo json_encode(["error" => "Endpoint not found", "path" => $path, "method" => $request_method]);

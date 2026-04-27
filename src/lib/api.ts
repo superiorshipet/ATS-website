@@ -1,4 +1,3 @@
-// API Configuration - Decides which backend to use based on environment
 
 export const getApiUrl = () => {
   // Get the current hostname
