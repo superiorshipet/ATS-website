@@ -7,8 +7,7 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { GraduationCap, Building2, Mail, Lock, User, Phone } from 'lucide-react';
 import logo from '/src/assets/images/logo.png';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { API_URL } from '../../lib/api';
 
 export function Auth() {
   const navigate = useNavigate();
@@ -23,6 +22,8 @@ export function Auth() {
     const formData = new FormData(e.currentTarget);
     
     try {
+      console.log('🚀 Login request to:', `${API_URL}/auth/login`);
+      
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -33,6 +34,7 @@ export function Auth() {
       });
       
       const data = await response.json();
+      console.log('📡 Login response:', data);
       
       if (data.success) {
         localStorage.setItem('token', data.data.token);
@@ -44,6 +46,7 @@ export function Auth() {
         setError(data.error || 'بيانات غير صحيحة');
       }
     } catch (err) {
+      console.error('❌ Login error:', err);
       setError('خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);
@@ -57,6 +60,8 @@ export function Auth() {
     const formData = new FormData(e.currentTarget);
     
     try {
+      console.log('🚀 Register request to:', `${API_URL}/auth/register`);
+      
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -70,6 +75,7 @@ export function Auth() {
       });
       
       const data = await response.json();
+      console.log('📡 Register response:', data);
       
       if (data.success) {
         alert('تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول');
@@ -77,6 +83,7 @@ export function Auth() {
         setError(data.error || 'حدث خطأ');
       }
     } catch (err) {
+      console.error('❌ Register error:', err);
       setError('خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);
@@ -98,8 +105,8 @@ export function Auth() {
               }}
             />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">توظيف</h1>
-          <p className="text-gray-600 mt-2">فرص عمل بلا حدود</p>
+          <h1 className="text-3xl font-bold text-gray-900">ATS-websit</h1>
+          <p className="text-gray-600 mt-2">نظام تتبع المتقدمين المتطور</p>
         </div>
 
         <Card className="shadow-xl">

@@ -1,33 +1,24 @@
-
+// تحديد عنوان API بناءً على بيئة التشغيل
 export const getApiUrl = () => {
-  // Get the current hostname
-  const hostname = window.location.hostname;
-  
-  console.log('📍 Current hostname:', hostname);
-  
-  // If we're on Railway (production)
-  if (hostname.includes('railway.app') || hostname.includes('railway')) {
-    const railwayUrl = 'https://ats-website-production.up.railway.app/api';
-    console.log('🚀 Using Railway backend:', railwayUrl);
-    return railwayUrl;
+  // إذا كنا في بيئة التطوير (Local)
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    console.log('📍 Local environment - using localhost:8000');
+    return 'http://localhost:8000/api';
   }
   
-  // If we're on localhost (development)
-  if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    const localUrl = 'http://localhost:8000/api';
-    console.log('💻 Using local backend:', localUrl);
-    return localUrl;
+  // إذا كنا في بيئة Railway (Production)
+  if (window.location.hostname.includes('railway.app')) {
+    // استخدم عنوان الباك إند على Railway
+    // يجب تغيير هذا الرابط إلى رابط الباك إند الفعلي الخاص بك
+    const railwayBackend = 'https://ats-website-production.up.railway.app';
+    console.log('🚀 Railway environment - using:', railwayBackend);
+    return `${railwayBackend}/api`;
   }
   
-  // Check for environment variable (fallback)
-  if (import.meta.env.VITE_API_URL) {
-    console.log('📦 Using env variable:', import.meta.env.VITE_API_URL);
-    return import.meta.env.VITE_API_URL;
-  }
-  
-  // Default fallback
-  console.log('⚠️ Using default fallback: http://localhost:8000/api');
+  // افتراضي (للتجربة)
+  console.log('⚠️ Unknown environment - using default');
   return 'http://localhost:8000/api';
 };
 
 export const API_URL = getApiUrl();
+console.log('🔧 API_URL:', API_URL);
