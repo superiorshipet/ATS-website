@@ -51,7 +51,7 @@ export function Home() {
             <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
               <GraduationCap className="w-8 h-8 text-blue-600" />
             </div>
-            <CardTitle className="text-2xl">الخريجين</CardTitle>
+            <CardTitle className="text-2xl">باحث عن عمل</CardTitle>
             <CardDescription>قدم سيرتك الذاتية ابحث عن الوظائف المناسبة</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -78,7 +78,7 @@ export function Home() {
             <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
               <Building2 className="w-8 h-8 text-green-600" />
             </div>
-            <CardTitle className="text-2xl">جهات التوظيف</CardTitle>
+            <CardTitle className="text-2xl">شريك اعمال</CardTitle>
             <CardDescription>نشر الوظائف واستعراض السير الذاتية</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

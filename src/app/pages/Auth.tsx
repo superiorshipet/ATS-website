@@ -160,11 +160,11 @@ export function Auth() {
                     <div className="grid grid-cols-2 gap-3">
                       <Button type="button" variant={userType === 'graduate' ? 'default' : 'outline'} className="w-full h-auto py-4 flex flex-col gap-2" onClick={() => setUserType('graduate')}>
                         <GraduationCap className="w-6 h-6" />
-                        <span>خريج</span>
+                        <span>باحث عن عمل</span>
                       </Button>
                       <Button type="button" variant={userType === 'employer' ? 'default' : 'outline'} className="w-full h-auto py-4 flex flex-col gap-2" onClick={() => setUserType('employer')}>
                         <Building2 className="w-6 h-6" />
-                        <span>جهة توظيف</span>
+                        <span>شريك اعمال </span>
                       </Button>
                     </div>
                   </div>
