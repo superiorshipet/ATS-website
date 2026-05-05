@@ -1,7 +1,8 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Building2, GraduationCap, Home, Shield, LogOut, User, Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { ChatBot } from '../components/ChatBot';
+// استيراد الصورة من المسار الصحيح
+import logo from '/src/assets/images/logo.png';
 
 export function Root() {
   const location = useLocation();
@@ -38,19 +39,26 @@ export function Root() {
     return '/home/admin/profile';
   };
 
-  const visibleNavItems = navItems.filter(item => item.showFor.includes(userType || ''));
-
   return (
     <div className="min-h-screen bg-gray-50" dir="rtl">
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between py-3 md:py-0 md:h-16">
-            {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 md:w-6 md:h-6 text-white" />
+            {/* Logo and Brand */}
+            <div className="flex items-center gap-3">
+              <img 
+                src={logo} 
+                alt="ATS-websit logo" 
+                className="w-10 h-10 md:w-12 md:h-12 object-contain rounded-lg"
+                onError={(e) => {
+                  console.error('Logo failed to load');
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+              <div className="flex flex-col">
+                <h1 className="text-lg md:text-xl font-bold text-gray-900">ATS-websit</h1>
+                <span className="text-xs text-gray-500 hidden md:block">نظام تتبع المتقدمين</span>
               </div>
-              <h1 className="text-lg md:text-xl font-bold text-gray-900">ATS-websit</h1>
             </div>
 
             {/* Mobile Menu Button */}
@@ -64,20 +72,23 @@ export function Root() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-4">
               <nav className="flex gap-4">
-                {visibleNavItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-                        location.pathname === item.path ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
+                {navItems.map((item) => {
+                  if (item.showFor.includes(userType || '')) {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                          location.pathname === item.path ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  }
+                  return null;
                 })}
                 <Link
                   to={getProfilePath()}
@@ -107,27 +118,28 @@ export function Root() {
           {mobileMenuOpen && (
             <div className="md:hidden py-3 border-t">
               <nav className="flex flex-col gap-2">
-                {visibleNavItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-                        location.pathname === item.path ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
+                {navItems.map((item) => {
+                  if (item.showFor.includes(userType || '')) {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
+                          location.pathname === item.path ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-gray-900'
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span>{item.label}</span>
+                      </Link>
+                    );
+                  }
+                  return null;
                 })}
                 <Link
                   to={getProfilePath()}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-md transition-colors ${
-                    location.pathname.includes('profile') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-gray-600 hover:text-gray-900"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <User className="w-4 h-4" />
@@ -158,11 +170,22 @@ export function Root() {
 
       <footer className="bg-white border-t mt-8 md:mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
-          <p className="text-center text-sm text-gray-600">© 2026 ATS-websit - جميع الحقوق محفوظة</p>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <img 
+                src={logo} 
+                alt="logo" 
+                className="w-6 h-6 object-contain"
+                onError={(e) => e.currentTarget.style.display = 'none'}
+              />
+              <p className="text-center text-sm text-gray-600">© 2026 ATS-websit - جميع الحقوق محفوظة</p>
+            </div>
+            <div className="text-sm text-gray-500">
+              نظام تتبع المتقدمين المتطور
+            </div>
+          </div>
         </div>
       </footer>
-
-      <ChatBot />
     </div>
   );
 }

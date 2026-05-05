@@ -6,20 +6,23 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { GraduationCap, Building2, Mail, Lock, User, Phone } from 'lucide-react';
-import { API_URL } from '../../lib/api';
+import logo from '/src/assets/images/logo.png';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export function Auth() {
   const navigate = useNavigate();
   const [userType, setUserType] = useState('graduate');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     const formData = new FormData(e.currentTarget);
     
     try {
-      console.log('📡 Login API URL:', `${API_URL}/auth/login`);
       const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -28,6 +31,7 @@ export function Auth() {
           password: formData.get('password')
         })
       });
+      
       const data = await response.json();
       
       if (data.success) {
@@ -37,11 +41,10 @@ export function Auth() {
         localStorage.setItem('user_name', data.data.name);
         navigate('/home');
       } else {
-        alert('فشل تسجيل الدخول: ' + (data.error || 'بيانات غير صحيحة'));
+        setError(data.error || 'بيانات غير صحيحة');
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      alert('خطأ في الاتصال بالخادم');
+    } catch (err) {
+      setError('خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);
     }
@@ -50,10 +53,10 @@ export function Auth() {
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError('');
     const formData = new FormData(e.currentTarget);
     
     try {
-      console.log('📡 Register API URL:', `${API_URL}/auth/register`);
       const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,16 +68,16 @@ export function Auth() {
           user_type: userType
         })
       });
+      
       const data = await response.json();
       
       if (data.success) {
         alert('تم إنشاء الحساب بنجاح! الرجاء تسجيل الدخول');
       } else {
-        alert('فشل إنشاء الحساب: ' + (data.error || 'حدث خطأ'));
+        setError(data.error || 'حدث خطأ');
       }
-    } catch (error) {
-      console.error('Register error:', error);
-      alert('خطأ في الاتصال بالخادم');
+    } catch (err) {
+      setError('خطأ في الاتصال بالخادم');
     } finally {
       setLoading(false);
     }
@@ -84,8 +87,16 @@ export function Auth() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4" dir="rtl">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-4">
-            <GraduationCap className="w-10 h-10 text-white" />
+          <div className="flex justify-center mb-4">
+            <img 
+              src={logo} 
+              alt="ATS-websit logo" 
+              className="w-20 h-20 object-contain"
+              onError={(e) => {
+                console.error('Logo failed to load');
+                e.currentTarget.style.display = 'none';
+              }}
+            />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">ATS-websit</h1>
           <p className="text-gray-600 mt-2">نظام تتبع المتقدمين المتطور</p>
@@ -99,6 +110,12 @@ export function Auth() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-center">
+                {error}
+              </div>
+            )}
+            
             <Tabs defaultValue="login" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="login">تسجيل الدخول</TabsTrigger>
