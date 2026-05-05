@@ -130,7 +130,7 @@ export function GraduatesHome() {
     <div className="space-y-8" dir="rtl">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">لوحة الخريجين</h1>
+          <h1 className="text-3xl font-bold text-gray-900"> بوابتك المهنية</h1>
           <p className="text-gray-600 mt-2">مرحباً بك في منصة البحث عن الوظائف</p>
         </div>
       </div>

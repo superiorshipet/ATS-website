@@ -99,7 +99,7 @@ export function Auth() {
             />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">ATS-websit</h1>
-          <p className="text-gray-600 mt-2">نظام تتبع المتقدمين المتطور</p>
+          <p className="text-gray-600 mt-2">فرص عمل بلا حدود</p>
         </div>
 
         <Card className="shadow-xl">
