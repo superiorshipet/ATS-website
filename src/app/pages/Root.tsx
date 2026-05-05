@@ -56,8 +56,8 @@ export function Root() {
                 }}
               />
               <div className="flex flex-col">
-                <h1 className="text-lg md:text-xl font-bold text-gray-900">ATS-websit</h1>
-                <span className="text-xs text-gray-500 hidden md:block">نظام تتبع المتقدمين</span>
+                <h1 className="text-lg md:text-xl font-bold text-gray-900">توظيف</h1>
+                <span className="text-xs text-gray-500 hidden md:block">فرص عمل بلا حدود</span>
               </div>
             </div>
 
