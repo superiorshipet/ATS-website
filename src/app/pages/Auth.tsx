@@ -98,7 +98,7 @@ export function Auth() {
               }}
             />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">توظيف بلا حدود</h1>
+          <h1 className="text-3xl font-bold text-gray-900">توظيف</h1>
           <p className="text-gray-600 mt-2">فرص عمل بلا حدود</p>
         </div>
 
