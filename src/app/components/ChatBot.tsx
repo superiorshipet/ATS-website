@@ -94,7 +94,7 @@ export const ChatBot = () => {
               </div>
               <div>
                 <h3 className="font-bold">مساعد ATS الذكي</h3>
-                <p className="text-xs text-blue-100">متصل الآن | ردود فورية</p>
+                <p className="text-xs text-blue-100">متصل فورا | ردود فورية</p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1 rounded-lg transition">
