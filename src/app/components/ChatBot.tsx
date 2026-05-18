@@ -1,326 +1,180 @@
-import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, User, Loader2, Trash2 } from 'lucide-react';
-import { Button } from './ui/button';
-import { API_URL } from '../../lib/api';
+import { useState } from 'react';
 
-interface ChatMessage {
-  id: string;
-  role: 'user' | 'bot';
-  content: string;
-  timestamp: string;
-}
-
-const STORAGE_KEY = 'ats_chat_history';
-
-const QUICK_REPLIES = [
-  'كيف أبحث عن وظيفة؟',
-  'كيف أنشر وظيفة؟',
-  'ما حالة طلباتي؟',
-  'كيف أبني سيرتي الذاتية؟',
-];
-
-export function ChatBot() {
+export const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [historyLoaded, setHistoryLoaded] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [messages, setMessages] = useState([
+    { text: "مرحباً! 👋 أنا مساعد ATS الذكي. كيف يمكنني مساعدتك اليوم؟", sender: "bot" }
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
-  const token = localStorage.getItem('token');
-  const userType = localStorage.getItem('user_type') || 'guest';
-  const userId = localStorage.getItem('user_id');
-
-  // Load chat history from backend on first open
-  useEffect(() => {
-    if (!isOpen || historyLoaded || !userId) return;
-
-    const loadHistory = async () => {
-      try {
-        const response = await fetch(`${API_URL}/chatbot/history?user_id=${userId}`);
-        const data = await response.json();
-        if (data.success && data.data && data.data.length > 0) {
-          // Convert backend history to frontend format
-          const backendMessages: ChatMessage[] = [];
-          data.data.forEach((item: any) => {
-            backendMessages.push({
-              id: `h-${item.id}-user`,
-              role: 'user',
-              content: item.message,
-              timestamp: item.created_at,
-            });
-            backendMessages.push({
-              id: `h-${item.id}-bot`,
-              role: 'bot',
-              content: item.response,
-              timestamp: item.created_at,
-            });
-          });
-          setMessages(backendMessages);
-        }
-      } catch (error) {
-        console.error('Error loading chat history:', error);
-      } finally {
-        setHistoryLoaded(true);
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+    
+    // إضافة رسالة المستخدم
+    const userMessage = input.trim();
+    setMessages(prev => [...prev, { text: userMessage, sender: "user" }]);
+    setInput("");
+    setIsTyping(true);
+    
+    // معالجة الرسالة
+    setTimeout(() => {
+      let reply = "";
+      const msg = userMessage.toLowerCase();
+      
+      // التحقق من الكلمات المفتاحية
+      if (msg.includes('اسمك') || msg.includes('من انت') || msg.includes('你是谁')) {
+        reply = "أنا مساعد ATS الذكي! 🤖 تم تطويري لمساعدتك في استخدام منصة التوظيف. اسألني أي شيء!";
       }
-    };
-
-    loadHistory();
-  }, [isOpen, historyLoaded, userId]);
-
-  // Save messages to localStorage
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-  }, [messages]);
-
-  // Scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  // Focus input when opening
-  useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 300);
-    }
-  }, [isOpen]);
-
-  const sendMessage = async (messageText: string) => {
-    if (!messageText.trim() || loading) return;
-
-    const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: messageText.trim(),
-      timestamp: new Date().toISOString(),
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
-    setInput('');
-    setLoading(true);
-
-    // Prepare message history for Groq context
-    const messageHistory = messages.slice(-8).map((msg) => ({
-      role: msg.role,
-      content: msg.content,
-    }));
-
-    try {
-      const response = await fetch(`${API_URL}/chatbot`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: messageText.trim(),
-          user_type: userType,
-          user_id: userId,
-          messages: messageHistory,
-        }),
-      });
-
-      const data = await response.json();
-
-      const botMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'bot',
-        content: data.success
-          ? data.response
-          : 'عذراً، حدث خطأ. الرجاء المحاولة لاحقاً.',
-        timestamp: data.timestamp || new Date().toISOString(),
-      };
-
-      setMessages((prev) => [...prev, botMsg]);
-    } catch (error) {
-      console.error('Chatbot error:', error);
-      const botMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        role: 'bot',
-        content: 'عذراً، تعذر الاتصال بالخادم. تأكد من اتصالك بالإنترنت.',
-        timestamp: new Date().toISOString(),
-      };
-      setMessages((prev) => [...prev, botMsg]);
-    } finally {
-      setLoading(false);
-    }
+      else if (msg.includes('وظائف') || msg.includes('وظيفة') || msg.includes('job') || msg.includes('عمل')) {
+        reply = "📋 **الوظائف المتاحة:**\n\nيمكنك البحث عن الوظائف من خلال:\n1. الذهاب إلى 'الوظائف المتاحة' في القائمة\n2. استخدام شريط البحث للتصفية\n3. الضغط على 'قدم الآن' للتقديم\n\nهل تبحث عن وظيفة معينة؟";
+      }
+      else if (msg.includes('سيرة') || msg.includes('cv') || msg.includes('resume') || msg.includes('السيرة')) {
+        reply = "📄 **بناء السيرة الذاتية:**\n\nلإنشاء سيرتك الذاتية:\n1. اذهب إلى 'بناء السيرة الذاتية'\n2. أضف معلوماتك الشخصية\n3. أضف خبراتك العملية\n4. أضف مهاراتك\n5. اضغط 'حفظ'\n\nيمكنك أيضاً رفع ملف PDF جاهز!";
+      }
+      else if (msg.includes('تسجيل') || msg.includes('دخول') || msg.includes('login')) {
+        reply = "🔐 **تسجيل الدخول:**\n\nللتسجيل كخريج أو جهة توظيف:\n1. اذهب إلى صفحة التسجيل\n2. اختر نوع الحساب\n3. املأ البيانات\n4. اضغط 'إنشاء حساب'\n\nللدخول: استخدم بريدك الإلكتروني وكلمة المرور.";
+      }
+      else if (msg.includes('شركات') || msg.includes('شركة') || msg.includes('employer') || msg.includes('جهة')) {
+        reply = "🏢 **جهات التوظيف:**\n\nكجهة توظيف يمكنك:\n1. نشر وظائف جديدة\n2. إدارة الوظائف المنشورة\n3. مراجعة المتقدمين\n4. قبول أو رفض الطلبات\n\nهل تريد نشر وظيفة جديدة؟";
+      }
+      else if (msg.includes('خريج') || msg.includes('graduate') || msg.includes('طالب')) {
+        reply = "🎓 **الخريجين:**\n\nكخريج يمكنك:\n1. بناء سيرتك الذاتية\n2. البحث عن وظائف مناسبة\n3. التقديم على الوظائف\n4. متابعة حالة طلباتك\n\nهل تبحث عن وظيفة معينة؟";
+      }
+      else if (msg.includes('مشكلة') || msg.includes('خطأ') || msg.includes('error') || msg.includes('bug')) {
+        reply = "⚠️ **الدعم الفني:**\n\nإذا واجهتك أي مشكلة، يرجى:\n1. التأكد من اتصال الإنترنت\n2. تحديث الصفحة (F5)\n3. مسح الكاش (Ctrl+Shift+Delete)\n4. أو التواصل معنا على: support@ats-website.com";
+      }
+      else if (msg.includes('شكر') || msg.includes('thank') || msg.includes('thanks')) {
+        reply = "🙏 **على الرحب والسعة!**\n\nسعيد بمساعدتك! هل هناك شيء آخر تحتاج إليه؟";
+      }
+      else if (msg.includes('مساعدة') || msg.includes('help') || msg.includes('المساعدة')) {
+        reply = "💡 **المساعدة السريعة:**\n\n• 'وظائف' - للبحث عن وظائف\n• 'سيرة ذاتية' - لبناء السيرة الذاتية\n• 'تسجيل' - للتسجيل والدخول\n• 'شركات' - لمعلومات جهات التوظيف\n• 'خريج' - لمعلومات الخريجين\n• 'مشكلة' - للإبلاغ عن مشكلة\n• 'شكراً' - للتواصل الإيجابي\n\nاسألني أي شيء!";
+      }
+      else {
+        reply = "💡 **كيف يمكنني مساعدتك؟**\n\nجرب كتابة أحد هذه الكلمات:\n• 'وظائف' - للبحث عن وظائف\n• 'سيرة ذاتية' - لبناء السيرة الذاتية\n• 'تسجيل' - للتسجيل والدخول\n• 'شركات' - لمعلومات جهات التوظيف\n• 'مساعدة' - لعرض كل الأوامر\n\nأو اكتب سؤالك بشكل طبيعي وسأحاول مساعدتك!";
+      }
+      
+      setMessages(prev => [...prev, { text: reply, sender: "bot" }]);
+      setIsTyping(false);
+    }, 800);
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    sendMessage(input);
-  };
-
-  const handleQuickReply = (text: string) => {
-    sendMessage(text);
-  };
-
-  const clearChat = () => {
-    setMessages([]);
-    localStorage.removeItem(STORAGE_KEY);
-  };
-
-  // Don't show chatbot on auth page or if not logged in
-  if (!token) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 z-50" dir="rtl">
-      {/* Chat Panel */}
+    <>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 left-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-full shadow-lg hover:scale-110 transition-all z-50 group"
+      >
+        {isOpen ? (
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        ) : (
+          <div className="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
+          </div>
+        )}
+      </button>
+
       {isOpen && (
-        <div
-          className="mb-3 w-[360px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col"
-          style={{
-            animation: 'slideIn 0.3s ease-out',
-          }}
-        >
+        <div className="fixed bottom-24 left-6 w-[450px] h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 border animate-fadeIn">
           {/* Header */}
-          <div className="bg-blue-600 px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">مساعد سيرتي الذكية</h3>
-                <p className="text-blue-100 text-xs">مدعوم بالذكاء الاصطناعي</p>
+                <h3 className="font-bold">مساعد ATS الذكي</h3>
+                <p className="text-xs text-blue-100">متصل الآن | ردود فورية</p>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              {messages.length > 0 && (
-                <button
-                  onClick={clearChat}
-                  className="text-blue-100 hover:text-white text-xs px-2 py-1 rounded hover:bg-white/10 transition-colors"
-                  title="مسح المحادثة"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              )}
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-white/80 hover:text-white p-1 rounded hover:bg-white/10 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            <button onClick={() => setIsOpen(false)} className="hover:bg-white/20 p-1 rounded-lg transition">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
-          {/* Messages Area */}
-          <div className="flex-1 max-h-[400px] min-h-[300px] overflow-y-auto p-4 space-y-3 bg-gray-50">
-            {messages.length === 0 && (
-              <div className="text-center py-8">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Bot className="w-8 h-8 text-blue-600" />
-                </div>
-                <p className="text-gray-600 text-sm mb-1">أهلاً بك! 👋</p>
-                <p className="text-gray-500 text-xs">أنا سيرتي، مساعدك الذكي. كيف يمكنني مساعدتك اليوم؟</p>
-              </div>
-            )}
-
-            {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex gap-2 ${msg.role === 'user' ? 'flex-row' : 'flex-row-reverse'}`}
-              >
-                <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    msg.role === 'user' ? 'bg-blue-600' : 'bg-gray-200'
-                  }`}
-                >
-                  {msg.role === 'user' ? (
-                    <User className="w-4 h-4 text-white" />
-                  ) : (
-                    <Bot className="w-4 h-4 text-gray-600" />
-                  )}
-                </div>
-                <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed whitespace-pre-wrap ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-tr-sm'
-                      : 'bg-white text-gray-800 border border-gray-200 rounded-tl-sm shadow-sm'
-                  }`}
-                >
-                  {msg.content}
+          {/* Messages */}
+          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-slideIn`}>
+                <div className={`max-w-[85%] p-3 rounded-xl ${
+                  msg.sender === 'user' 
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-br-none' 
+                    : 'bg-white text-gray-800 rounded-bl-none shadow-sm border'
+                }`}>
+                  <p className="text-sm whitespace-pre-line">{msg.text}</p>
                 </div>
               </div>
             ))}
-
-            {loading && (
-              <div className="flex gap-2 flex-row-reverse">
-                <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-4 h-4 text-gray-600" />
-                </div>
-                <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-2 shadow-sm">
-                  <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-white text-gray-800 p-3 rounded-xl rounded-bl-none shadow-sm border">
+                  <div className="flex gap-1">
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                  </div>
                 </div>
               </div>
             )}
-
-            <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Replies */}
-          {messages.length === 0 && !loading && (
-            <div className="px-4 pb-2 bg-gray-50">
-              <div className="flex flex-wrap gap-2">
-                {QUICK_REPLIES.map((reply) => (
-                  <button
-                    key={reply}
-                    onClick={() => handleQuickReply(reply)}
-                    className="text-xs bg-white border border-gray-200 rounded-full px-3 py-1.5 text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-colors"
-                  >
-                    {reply}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Input Area */}
-          <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-gray-200">
+          {/* Input */}
+          <div className="p-4 border-t bg-white rounded-b-2xl">
             <div className="flex gap-2">
               <input
-                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="اكتب رسالتك هنا..."
-                className="flex-1 px-3 py-2 text-sm bg-gray-100 border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 placeholder:text-gray-400"
-                disabled={loading}
+                onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                placeholder="اكتب سؤالك هنا..."
+                className="flex-1 p-3 border rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-right"
+                dir="rtl"
               />
-              <Button
-                type="submit"
-                size="icon"
-                className="rounded-xl w-9 h-9 bg-blue-600 hover:bg-blue-700 flex-shrink-0"
-                disabled={loading || !input.trim()}
+              <button
+                onClick={sendMessage}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3 rounded-xl hover:scale-105 transition"
               >
-                <Send className="w-4 h-4" />
-              </Button>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
             </div>
-          </form>
+            <p className="text-xs text-gray-400 text-center mt-2">
+              💡 جرب كتابة: مرحباً | وظائف | سيرة ذاتية | تسجيل | شركات | خريج | مساعدة
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Floating Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-105 ${
-          isOpen
-            ? 'bg-gray-800 hover:bg-gray-900'
-            : 'bg-blue-600 hover:bg-blue-700'
-        }`}
-        aria-label={isOpen ? 'إغلاق المحادثة' : 'فتح المحادثة'}
-      >
-        {isOpen ? (
-          <X className="w-6 h-6 text-white" />
-        ) : (
-          <MessageCircle className="w-6 h-6 text-white" />
-        )}
-      </button>
-    </div>
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(-10px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-5px); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+        .animate-slideIn { animation: slideIn 0.2s ease-out; }
+        .animate-bounce { animation: bounce 0.6s infinite; }
+      `}</style>
+    </>
   );
-}
-
+};
