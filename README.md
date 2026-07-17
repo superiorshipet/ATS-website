@@ -149,3 +149,125 @@ npm run dev
 
 
 http://localhost:3000
+
+
+🔑 Test Login Credentials
+Role	Email	Password
+👑 Admin	admin@ats.com	admin123
+🎓 Graduate	graduate@test.com	123456
+🏢 Employer	company@test.com	123456
+📡 API Endpoints
+Authentication
+Method	Endpoint	Description
+POST	/api/auth/login	User login
+POST	/api/auth/register	User registration
+Jobs
+Method	Endpoint	Description
+GET	/api/jobs	Get all jobs
+GET	/api/jobs/{id}	Get specific job
+POST	/api/jobs	Create new job
+PUT	/api/jobs/{id}	Update job
+DELETE	/api/jobs/{id}	Delete job
+Applications
+Method	Endpoint	Description
+POST	/api/applications	Apply to job
+GET	/api/applications	Get user applications
+Profile
+Method	Endpoint	Description
+GET	/api/profile	Get user profile
+PUT	/api/profile	Update user profile
+Admin
+Method	Endpoint	Description
+GET	/api/admin/users	Get all users
+GET	/api/admin/stats	Get platform stats
+🚢 Deployment on Railway
+Automatic Deployment
+
+    Push code to GitHub
+
+    Create account on Railway
+
+    Click "Deploy from GitHub repo"
+
+    Select your repository
+
+    Add environment variables
+
+Required Environment Variables
+env
+
+DATABASE_URL=postgresql://user:pass@host:port/database
+VITE_API_URL=https://your-app.up.railway.app/api
+
+Manual Deployment
+bash
+
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login
+railway login
+
+# Link project
+railway link
+
+# Deploy
+railway up
+
+# Add database
+railway add
+
+🧪 Testing API
+bash
+
+# Test login
+curl -X POST http://localhost:8000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@ats.com","password":"admin123"}'
+
+# Get all jobs
+curl http://localhost:8000/api/jobs
+
+# Get platform stats
+curl http://localhost:8000/api/admin/stats
+
+💬 Smart Chatbot Commands
+
+The platform includes an AI-powered chatbot to assist users:
+Command	Response
+hello / hi	Greeting message
+jobs / work	Job search information
+resume / cv	Resume building instructions
+login / register	Authentication help
+employer / company	Employer features
+graduate / student	Graduate features
+help / support	Show all commands
+🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+    Fork the repository
+
+    Create a new branch (git checkout -b feature/amazing-feature)
+
+    Make your changes (git commit -m 'Add amazing feature')
+
+    Push to branch (git push origin feature/amazing-feature)
+
+    Open a Pull Request
+
+📝 License
+
+This project is licensed under the MIT License.
+📞 Contact & Support
+
+    Email: support@ats-website.com
+
+    Website: https://ats-website-production.up.railway.app
+
+    GitHub: https://github.com/superiorshipet/ATS-website
+
+🙏 Acknowledgments
+
+Special thanks to all contributors and open-source projects that made this possible.
+
