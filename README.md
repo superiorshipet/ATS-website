@@ -5,7 +5,7 @@ Smart recruitment platform with a React frontend and a Laravel API backend.
 ## Stack
 
 Backend:
-- Laravel / PHP 8.3
+- Laravel 13 / PHP 8.3
 - PostgreSQL
 - Repository pattern with DTOs, repository interfaces, services, and controllers
 - Automatic database bootstrap, migrations, and admin seeding on Railway startup
@@ -58,6 +58,7 @@ Railway backend:
 
 ```env
 APP_ENV=production
+APP_KEY=base64:generate-a-stable-production-key
 APP_DEBUG=false
 APP_URL=https://ats-website-ats.up.railway.app
 DATABASE_URL=${{ats.DATABASE_URL}}

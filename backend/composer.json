@@ -2,10 +2,11 @@
     "name": "ats/laravel-backend",
     "type": "project",
     "description": "Laravel API backend for ATS website.",
+    "license": "proprietary",
     "require": {
-        "php": "^8.2",
-        "laravel/framework": "^11.0",
-        "laravel/tinker": "^2.9"
+        "php": "^8.3",
+        "laravel/framework": "^13.0",
+        "laravel/tinker": "^3.0"
     },
     "autoload": {
         "psr-4": {

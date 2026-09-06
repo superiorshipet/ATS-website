@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\ServiceProvider;
+
 return [
     'name' => env('APP_NAME', 'ATS'),
     'env' => env('APP_ENV', 'production'),
@@ -16,7 +19,8 @@ return [
         'driver' => 'file',
         'store' => 'database',
     ],
-    'providers' => [
+    'providers' => ServiceProvider::defaultProviders()->merge([
         App\Providers\RepositoryServiceProvider::class,
-    ],
+    ])->toArray(),
+    'aliases' => Facade::defaultAliases()->toArray(),
 ];
