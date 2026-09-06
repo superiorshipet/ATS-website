@@ -1,4 +1,12 @@
 node_modules
+backend/vendor
+backend/bootstrap/cache/*.php
+backend/storage/app/*
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/public/storage
 .git
 .github
 .vscode

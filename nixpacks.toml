@@ -2,7 +2,7 @@
 nixPkgs = ["php83", "php83Extensions.pdo_pgsql", "php83Extensions.mbstring", "php83Extensions.fileinfo", "php83Packages.composer", "nodejs", "pnpm"]
 
 [phases.install]
-cmds = ["pnpm config set store-dir /app/.pnpm-store", "cd /app && pnpm install --frozen-lockfile", "cd /app/backend && composer install --no-dev --optimize-autoloader --no-interaction"]
+cmds = ["pnpm config set store-dir /app/.pnpm-store", "cd /app && pnpm install --frozen-lockfile", "cd /app/backend && mkdir -p bootstrap/cache storage/app/public/avatars storage/app/public/resumes storage/framework/cache storage/framework/sessions storage/framework/views storage/logs && composer install --no-dev --optimize-autoloader --no-interaction"]
 
 [phases.build]
 cmds = ["cd /app && pnpm build", "cd /app/backend && if [ -z \"${APP_KEY:-}\" ]; then export APP_KEY=\"base64:$(php -r 'echo base64_encode(random_bytes(32));')\"; fi; php artisan config:cache && php artisan route:cache"]
