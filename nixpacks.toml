@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["php83", "php83Extensions.pdo_pgsql", "php83Extensions.mbstring", "php83Extensions.fileinfo", "composer", "nodejs", "pnpm"]
+nixPkgs = ["php83", "php83Extensions.pdo_pgsql", "php83Extensions.mbstring", "php83Extensions.fileinfo", "php83Packages.composer", "nodejs", "pnpm"]
 
 [phases.install]
 cmds = ["pnpm config set store-dir /app/.pnpm-store", "cd /app && pnpm install --frozen-lockfile", "cd /app/backend && composer install --no-dev --optimize-autoloader --no-interaction"]
