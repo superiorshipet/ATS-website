@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import { Badge } from '../../components/ui/badge';
 import { Mail, Phone, Calendar, Edit, Camera, Save, X, Building2, Globe, Users } from 'lucide-react';
 import { API_ORIGIN, API_URL } from '../../../lib/api';
+import { trackEvent } from '../../../lib/gtm';
 
 export function Profile() {
   const [profile, setProfile] = useState<any>(null);
@@ -73,6 +74,7 @@ export function Profile() {
       const data = await response.json();
       if (data.success) {
         setProfile((prev: any) => ({ ...prev, avatar_url: data.avatar_url }));
+        trackEvent('avatar_uploaded', { user_type: 'employer' });
         alert('تم تحديث الشعار بنجاح');
       }
     } catch (error) {

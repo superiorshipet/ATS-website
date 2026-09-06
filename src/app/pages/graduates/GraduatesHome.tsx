@@ -6,6 +6,7 @@ import { Badge } from '../../components/ui/badge';
 import { useState, useEffect, useRef } from 'react';
 
 import { API_ORIGIN, API_URL } from "../../../lib/api";
+import { trackEvent } from "../../../lib/gtm";
 
 interface Application {
   id: number;
@@ -95,6 +96,10 @@ export function GraduatesHome() {
       
       if (data.success) {
         setCvUrl(data.cv_url);
+        trackEvent('cv_uploaded', {
+          user_type: 'graduate',
+          file_type: fileExtension || null,
+        });
         alert('تم رفع السيرة الذاتية بنجاح!');
       } else {
         alert('فشل رفع الملف: ' + (data.error || 'حدث خطأ غير معروف'));

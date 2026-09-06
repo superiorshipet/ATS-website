@@ -6,6 +6,7 @@ import { Badge } from '../../components/ui/badge';
 import { Search, MapPin, Briefcase, Clock, DollarSign } from 'lucide-react';
 
 import { API_URL } from "../../../lib/api";
+import { trackEvent } from "../../../lib/gtm";
 
 export function Jobs() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -41,6 +42,10 @@ export function Jobs() {
       });
       const data = await response.json();
       if (data.success) {
+        trackEvent('job_application_submitted', {
+          job_id: jobId,
+          user_type: 'graduate',
+        });
         alert('تم تقديم طلبك بنجاح!');
       }
     } catch (error) {

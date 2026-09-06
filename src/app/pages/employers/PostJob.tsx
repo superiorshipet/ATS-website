@@ -8,6 +8,7 @@ import { Textarea } from '../../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { AlertCircle, Briefcase, CheckCircle2, DollarSign, Loader2, MapPin, Save } from 'lucide-react';
 import { API_URL } from '../../../lib/api';
+import { trackEvent } from '../../../lib/gtm';
 
 export function PostJob() {
   const navigate = useNavigate();
@@ -69,6 +70,10 @@ export function PostJob() {
       const data = await response.json();
       
       if (data.success) {
+        trackEvent(status === 'active' ? 'job_published' : 'job_draft_saved', {
+          employer_id: parseInt(employerId),
+          job_type: formData.job_type,
+        });
         setSuccess(status === 'active' ? 'تم نشر الوظيفة بنجاح' : 'تم حفظ الوظيفة كمسودة');
         window.setTimeout(() => navigate('/home/employers/manage-jobs'), 700);
       } else {

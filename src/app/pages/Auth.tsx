@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { AlertCircle, ArrowLeft, Building2, CheckCircle2, Eye, EyeOff, GraduationCap, Loader2, Lock, Mail, Phone, User } from 'lucide-react';
 import logo from '/src/assets/images/logo.png';
 import { API_URL } from '../../lib/api';
+import { trackEvent, trackPageView } from '../../lib/gtm';
 
 export function Auth() {
   const navigate = useNavigate();
@@ -17,6 +18,10 @@ export function Auth() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    trackPageView('/');
+  }, []);
 
   const redirectToHome = (type: string) => {
     const routes: Record<string, string> = {
@@ -52,6 +57,7 @@ export function Auth() {
         localStorage.setItem('user_id', data.data.id);
         localStorage.setItem('user_type', data.data.user_type);
         localStorage.setItem('user_name', data.data.name);
+        trackEvent('login_success', { user_type: data.data.user_type });
         redirectToHome(data.data.user_type);
       } else {
         setError(data.error || 'بيانات غير صحيحة');
@@ -93,6 +99,7 @@ export function Auth() {
       const data = await response.json();
 
       if (data.success) {
+        trackEvent('register_success', { user_type: userType });
         setSuccess('تم إنشاء الحساب بنجاح. يمكنك تسجيل الدخول الآن');
         setActiveTab('login');
         e.currentTarget.reset();

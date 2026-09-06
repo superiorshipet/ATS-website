@@ -3,6 +3,7 @@ import { Building2, GraduationCap, Home, Shield, LogOut, User, Menu } from 'luci
 import { useEffect, useState } from 'react';
 import logo from '/src/assets/images/logo.png';
 import { ChatBot } from '../components/ChatBot';
+import { trackEvent, trackPageView } from '../../lib/gtm';
 
 export function Root() {
   const location = useLocation();
@@ -18,11 +19,16 @@ export function Root() {
     setUserName(name);
   }, []);
 
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
     localStorage.removeItem('user_type');
     localStorage.removeItem('user_name');
+    trackEvent('logout');
     navigate('/');
   };
 

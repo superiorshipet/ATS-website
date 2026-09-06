@@ -9,6 +9,7 @@ import { Badge } from '../../components/ui/badge';
 import { Mail, Phone, MapPin, Calendar, Edit, Camera, Save, X } from 'lucide-react';
 
 import { API_ORIGIN, API_URL } from "../../../lib/api";
+import { trackEvent } from "../../../lib/gtm";
 
 interface ProfileData {
   id: number;
@@ -91,6 +92,7 @@ export function Profile() {
       const data = await response.json();
       if (data.success) {
         setProfile(prev => prev ? { ...prev, avatar_url: data.avatar_url } : null);
+        trackEvent('avatar_uploaded', { user_type: 'graduate' });
         alert('تم تحديث الصورة بنجاح');
       }
     } catch (error) {
