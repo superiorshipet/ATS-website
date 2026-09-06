@@ -2,6 +2,13 @@ node_modules/
 dist/
 backend/vendor/
 backend/.env
+backend/storage/app/*
+backend/storage/framework/cache/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+backend/public/storage
+uploads/
 .env
 .env.local
 .DS_Store

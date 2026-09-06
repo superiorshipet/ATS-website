@@ -7,6 +7,7 @@ use App\Repositories\Contracts\EmployerRepositoryInterface;
 use App\Repositories\Contracts\GraduateRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
@@ -88,14 +89,9 @@ class ProfileService
     {
         $extension = strtolower($file->getClientOriginalExtension());
         $filename = $prefix . '_' . time() . '.' . $extension;
-        $path = public_path("uploads/$folder");
 
-        if (!is_dir($path)) {
-            mkdir($path, 0775, true);
-        }
+        Storage::disk('public')->putFileAs($folder, $file, $filename);
 
-        $file->move($path, $filename);
-
-        return "/uploads/$folder/$filename";
+        return "/storage/$folder/$filename";
     }
 }

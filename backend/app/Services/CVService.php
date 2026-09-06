@@ -7,6 +7,7 @@ use App\Repositories\Contracts\CVRepositoryInterface;
 use App\Repositories\Contracts\GraduateRepositoryInterface;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CVService
 {
@@ -58,14 +59,10 @@ class CVService
     {
         $extension = strtolower($file->getClientOriginalExtension());
         $filename = 'resume_' . $graduateId . '_' . time() . '.' . $extension;
-        $path = public_path('uploads/resumes');
 
-        if (!is_dir($path)) {
-            mkdir($path, 0775, true);
-        }
+        Storage::disk('public')->putFileAs('resumes', $file, $filename);
 
-        $file->move($path, $filename);
-        $url = '/uploads/resumes/' . $filename;
+        $url = '/storage/resumes/' . $filename;
 
         $this->graduates->updateByUserId($graduateId, ['cv_url' => $url]);
 
