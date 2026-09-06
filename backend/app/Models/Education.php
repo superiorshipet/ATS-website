@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Education extends Model
 {
-    const UPDATED_AT = null;
+    public $timestamps = false;
 
     protected $fillable = [
         'graduate_id',

@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Application extends Model
 {
-    const UPDATED_AT = 'updated_at';
-    const CREATED_AT = null;
+    public $timestamps = false;
 
     protected $fillable = [
         'job_id',

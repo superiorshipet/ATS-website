@@ -1,5 +1,7 @@
 node_modules/
 dist/
+backend/vendor/
+backend/.env
 .env
 .env.local
 .DS_Store
@@ -9,4 +11,3 @@ history/
 .history
 .env
 .env.production
-
