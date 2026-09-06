@@ -8,7 +8,7 @@ export const getApiUrl = () => {
     return 'http://localhost:8000/api';
   }
 
-  return 'https://ats-website-production.up.railway.app/api';
+  return 'https://ats-website-ats.up.railway.app/api';
 };
 
 export const API_URL = getApiUrl();

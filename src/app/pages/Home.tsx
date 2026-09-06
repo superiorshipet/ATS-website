@@ -1,7 +1,5 @@
-import { Link } from 'react-router-dom';
-import { Building2, GraduationCap, CheckCircle, Users, FileText, TrendingUp } from 'lucide-react';
+import { Building2, CheckCircle, FileText, GraduationCap, TrendingUp, Users } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Button } from '../components/ui/button';
 import { useEffect, useState } from 'react';
 import { API_URL } from '../../lib/api';
 
@@ -11,13 +9,8 @@ export function Home() {
     active_jobs: 0,
     total_applications: 0
   });
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    console.log('Token from localStorage:', token);
-    setIsLoggedIn(!!token);
-    console.log('isLoggedIn:', !!token);
     fetchStats();
   }, []);
 

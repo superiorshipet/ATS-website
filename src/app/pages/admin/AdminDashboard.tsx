@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Card, CardContent } from '../../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table';
 import { Button } from '../../components/ui/button';
@@ -7,31 +7,21 @@ import { Badge } from '../../components/ui/badge';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import {
-  Users,
-  Building2,
-  Briefcase,
-  FileText,
-  TrendingUp,
+  AlertCircle,
+  CheckCircle2,
   Search,
-  MoreVertical,
   Shield,
   CheckCircle,
   XCircle,
-  Eye,
   Trash2,
-  Edit,
-  Plus,
-  UserPlus
+  Loader2,
+  UserPlus,
 } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -102,9 +92,12 @@ export function AdminDashboard() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [graduates, setGraduates] = useState<Graduate[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('users');
   const [loading, setLoading] = useState(true);
   const [showAddAdmin, setShowAddAdmin] = useState(false);
+  const [creatingAdmin, setCreatingAdmin] = useState(false);
+  const [adminFormError, setAdminFormError] = useState('');
+  const [adminFormSuccess, setAdminFormSuccess] = useState('');
   const [newAdmin, setNewAdmin] = useState({ full_name: '', email: '', phone: '', password: '' });
 
   useEffect(() => {
@@ -139,7 +132,18 @@ export function AdminDashboard() {
     }
   };
 
-  const createAdmin = async () => {
+  const createAdmin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setAdminFormError('');
+    setAdminFormSuccess('');
+
+    if (!newAdmin.full_name.trim() || !newAdmin.email.trim() || newAdmin.password.length < 6) {
+      setAdminFormError('اكتب الاسم والبريد وكلمة مرور لا تقل عن 6 أحرف');
+      return;
+    }
+
+    setCreatingAdmin(true);
+
     try {
       const response = await fetch(`${API_URL}/admin/create`, {
         method: 'POST',
@@ -148,16 +152,21 @@ export function AdminDashboard() {
       });
       const data = await response.json();
       if (data.success) {
-        alert('تم إضافة الأدمن بنجاح');
-        setShowAddAdmin(false);
+        setAdminFormSuccess('تم إضافة الأدمن بنجاح');
         setNewAdmin({ full_name: '', email: '', phone: '', password: '' });
         fetchAllData();
+        window.setTimeout(() => {
+          setShowAddAdmin(false);
+          setAdminFormSuccess('');
+        }, 700);
       } else {
-        alert(data.error || 'حدث خطأ');
+        setAdminFormError(data.error || 'حدث خطأ أثناء إضافة الأدمن');
       }
     } catch (error) {
       console.error('Error creating admin:', error);
-      alert('حدث خطأ في إضافة الأدمن');
+      setAdminFormError('حدث خطأ في إضافة الأدمن');
+    } finally {
+      setCreatingAdmin(false);
     }
   };
 
@@ -245,14 +254,58 @@ export function AdminDashboard() {
           <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center"><Shield className="w-7 h-7 text-white" /></div>
           <div><h1 className="text-3xl font-bold text-gray-900">Admin</h1><p className="text-gray-600">admin</p></div>
         </div>
-        <Dialog open={showAddAdmin} onOpenChange={setShowAddAdmin}>
+        <Dialog open={showAddAdmin} onOpenChange={(open) => {
+          setShowAddAdmin(open);
+          if (!open) {
+            setAdminFormError('');
+            setAdminFormSuccess('');
+          }
+        }}>
           <DialogTrigger asChild><Button className="gap-2"><UserPlus className="w-4 h-4" />إضافة أدمن جديد</Button></DialogTrigger>
-          <DialogContent><DialogHeader><DialogTitle>إضافة أدمن جديد</DialogTitle></DialogHeader>
-            <div className="space-y-4"><div><Label>الاسم الكامل</Label><Input value={newAdmin.full_name} onChange={(e) => setNewAdmin({...newAdmin, full_name: e.target.value})} /></div>
-            <div><Label>البريد الإلكتروني</Label><Input type="email" value={newAdmin.email} onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})} /></div>
-            <div><Label>رقم الهاتف</Label><Input value={newAdmin.phone} onChange={(e) => setNewAdmin({...newAdmin, phone: e.target.value})} /></div>
-            <div><Label>كلمة المرور</Label><Input type="password" value={newAdmin.password} onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})} /></div>
-            <Button onClick={createAdmin} className="w-full">إضافة</Button></div>
+          <DialogContent className="sm:max-w-md" dir="rtl">
+            <DialogHeader className="text-right">
+              <DialogTitle>إضافة أدمن جديد</DialogTitle>
+              <DialogDescription>أنشئ حساب إدارة بصلاحية دخول مباشرة للوحة التحكم</DialogDescription>
+            </DialogHeader>
+            <form onSubmit={createAdmin} className="space-y-4">
+              {adminFormError && (
+                <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <span>{adminFormError}</span>
+                </div>
+              )}
+              {adminFormSuccess && (
+                <div className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+                  <CheckCircle2 className="h-4 w-4 shrink-0" />
+                  <span>{adminFormSuccess}</span>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="admin-name">الاسم الكامل</Label>
+                <Input id="admin-name" value={newAdmin.full_name} onChange={(e) => setNewAdmin({...newAdmin, full_name: e.target.value})} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="admin-email">البريد الإلكتروني</Label>
+                <Input id="admin-email" type="email" value={newAdmin.email} onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="admin-phone">رقم الهاتف</Label>
+                <Input id="admin-phone" value={newAdmin.phone} onChange={(e) => setNewAdmin({...newAdmin, phone: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="admin-password">كلمة المرور</Label>
+                <Input id="admin-password" type="password" value={newAdmin.password} onChange={(e) => setNewAdmin({...newAdmin, password: e.target.value})} required />
+              </div>
+              <DialogFooter className="gap-2 sm:justify-start">
+                <Button type="submit" className="gap-2 bg-slate-950 hover:bg-slate-800" disabled={creatingAdmin}>
+                  {creatingAdmin ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                  {creatingAdmin ? 'جاري الإضافة...' : 'إضافة الأدمن'}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setShowAddAdmin(false)} disabled={creatingAdmin}>
+                  إلغاء
+                </Button>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
       </div>
