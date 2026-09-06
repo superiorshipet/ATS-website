@@ -5,7 +5,7 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { useState, useEffect, useRef } from 'react';
 
-import { API_URL } from "../../../lib/api";
+import { API_ORIGIN, API_URL } from "../../../lib/api";
 
 interface Application {
   id: number;
@@ -204,7 +204,7 @@ export function GraduatesHome() {
                 <Upload className="w-12 h-12 text-green-500 mb-4" />
                 <p className="text-green-600 mb-2">✓ تم رفع السيرة الذاتية</p>
                 <a 
-                  href={`http://localhost:8000${cvUrl}`} 
+                  href={`${API_ORIGIN}${cvUrl}`} 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-blue-600 hover:underline text-sm"

@@ -3,8 +3,7 @@ import { Building2, GraduationCap, CheckCircle, Users, FileText, TrendingUp } fr
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { useEffect, useState } from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+import { API_URL } from '../../lib/api';
 
 export function Home() {
   const [stats, setStats] = useState({

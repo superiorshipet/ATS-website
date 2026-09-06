@@ -5,8 +5,7 @@ import { Button } from '../../components/ui/button';
 import { Badge } from '../../components/ui/badge';
 import { Avatar, AvatarFallback } from '../../components/ui/avatar';
 import { Briefcase, MapPin, Calendar, ArrowRight, Mail, Phone, FileText } from 'lucide-react';
-
-const API_URL = 'http://localhost:8000/api';
+import { API_ORIGIN, API_URL } from '../../../lib/api';
 
 interface Applicant {
   id: number;
@@ -175,7 +174,7 @@ export function JobApplicants() {
                 {applicant.cv_url && (
                   <div>
                     <a 
-                      href={`http://localhost:8000${applicant.cv_url}`} 
+                      href={`${API_ORIGIN}${applicant.cv_url}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline text-sm flex items-center gap-1"

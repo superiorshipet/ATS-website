@@ -7,8 +7,7 @@ import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Briefcase, MapPin, DollarSign, Save, ArrowRight } from 'lucide-react';
-
-const API_URL = 'http://localhost:8000/api';
+import { API_URL } from '../../../lib/api';
 
 export function EditJob() {
   const { jobId } = useParams();

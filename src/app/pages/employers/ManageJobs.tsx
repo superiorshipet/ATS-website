@@ -30,8 +30,7 @@ import {
   TableRow,
 } from '../../components/ui/table';
 import { Link } from 'react-router-dom';
-
-const API_URL = 'http://localhost:8000/api';
+import { API_URL } from '../../../lib/api';
 
 interface Job {
   id: number;

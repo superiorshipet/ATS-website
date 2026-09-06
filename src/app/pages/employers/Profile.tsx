@@ -7,8 +7,7 @@ import { Textarea } from '../../components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
 import { Badge } from '../../components/ui/badge';
 import { Mail, Phone, Calendar, Edit, Camera, Save, X, Building2, Globe, Users } from 'lucide-react';
-
-const API_URL = 'http://localhost:8000/api';
+import { API_ORIGIN, API_URL } from '../../../lib/api';
 
 export function Profile() {
   const [profile, setProfile] = useState<any>(null);
@@ -104,7 +103,7 @@ export function Profile() {
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <div className="relative">
               <Avatar className="w-24 h-24">
-                <AvatarImage src={profile.avatar_url ? `http://localhost:8000${profile.avatar_url}` : ''} />
+                <AvatarImage src={profile.avatar_url ? `${API_ORIGIN}${profile.avatar_url}` : ''} />
                 <AvatarFallback className="text-2xl bg-blue-100 text-blue-600">
                   {profile.company_name?.substring(0, 2) || profile.full_name?.substring(0, 2)}
                 </AvatarFallback>

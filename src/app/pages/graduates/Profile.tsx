@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar'
 import { Badge } from '../../components/ui/badge';
 import { Mail, Phone, MapPin, Calendar, Edit, Camera, Save, X } from 'lucide-react';
 
-import { API_URL } from "../../../lib/api";
+import { API_ORIGIN, API_URL } from "../../../lib/api";
 
 interface ProfileData {
   id: number;
@@ -123,7 +123,7 @@ export function Profile() {
             {/* Avatar with upload */}
             <div className="relative">
               <Avatar className="w-24 h-24">
-                <AvatarImage src={profile.avatar_url ? `http://localhost:8000${profile.avatar_url}` : ''} />
+                <AvatarImage src={profile.avatar_url ? `${API_ORIGIN}${profile.avatar_url}` : ''} />
                 <AvatarFallback className="text-2xl bg-blue-100 text-blue-600">
                   {profile.full_name?.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </AvatarFallback>
